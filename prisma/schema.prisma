@@ -1,7 +1,4 @@
-// BazarX — Prisma schema
-// Normalized multi-vendor marketplace schema. Money fields use Decimal(12,2);
-// percentage/rate fields use Decimal(5,2). IDs are cuid() strings so nothing
-// SEO-sensitive (slugs, order numbers) leaks a sequential database id.
+
 
 generator client {
   provider = "prisma-client"
