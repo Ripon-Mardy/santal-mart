@@ -1,0 +1,43 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: bazarx-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: bazarx
+      POSTGRES_PASSWORD: bazarx
+      POSTGRES_DB: bazarx
+    ports:
+      - "5432:5432"
+    volumes:
+      - bazarx_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bazarx -d bazarx"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bazarx-app
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: "postgresql://bazarx:bazarx@postgres:5432/bazarx?schema=public"
+      AUTH_SECRET: ${AUTH_SECRET:-change-me-in-production}
+      NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
+      NEXT_PUBLIC_APP_NAME: BazarX
+      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME:-}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY:-}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET:-}
+      EMAIL_FROM: ${EMAIL_FROM:-BazarX <no-reply@bazarx.demo>}
+    ports:
+      - "3000:3000"
+
+volumes:
+  bazarx_postgres_data:
