@@ -32,7 +32,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         if (!user || !user.password) return null;
         if (user.status === "SUSPENDED") return null;
 
-        const isValid = await bcrypt.compare(parsed.data.password, user.password);
+        const isValid = await bcrypt.compare(
+          parsed.data.password,
+          user.password,
+        );
         if (!isValid) return null;
 
         return {
@@ -73,14 +76,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       return token;
     },
     async session({ session, token }) {
-      // Module augmentation of `next-auth/jwt`'s JWT type doesn't merge
-      // cleanly through this version's re-export chain, so `token` fields
-      // read back as `unknown` — cast explicitly rather than fight it.
       if (session.user) {
         session.user.id = token.id as string;
         session.user.role = token.role as Role;
         session.user.sellerId = (token.sellerId as string | null) ?? null;
-        session.user.sellerStatus = (token.sellerStatus as SellerStatus | null) ?? null;
+        session.user.sellerStatus =
+          (token.sellerStatus as SellerStatus | null) ?? null;
       }
       return session;
     },
