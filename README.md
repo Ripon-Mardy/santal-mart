@@ -1,8 +1,8 @@
-# BazarX
+# santal-mart
 
 **One Marketplace. Thousands of Stores.**
 
-BazarX is a full-stack, multi-vendor ecommerce marketplace — customers shop from thousands of independent stores, sellers run a store with their own dashboard, and platform admins moderate and operate the whole marketplace from one console.
+santal-mart is a full-stack, multi-vendor ecommerce marketplace — customers shop from thousands of independent stores, sellers run a store with their own dashboard, and platform admins moderate and operate the whole marketplace from one console.
 
 This is a real, working application: every button in this README's feature list is backed by a database write, a server-side authorization check, and (where money or inventory is involved) a database transaction. Nothing here is a static mockup.
 
@@ -31,18 +31,18 @@ This is a real, working application: every button in this README's feature list 
 
 ## Tech Stack
 
-| Layer | Choice |
-|---|---|
-| Framework | Next.js 16 (App Router, Turbopack, TypeScript strict) |
-| UI | Tailwind CSS v4, shadcn/ui, Lucide icons, Framer Motion |
-| Database | PostgreSQL |
-| ORM | Prisma 7 (`prisma-client` generator + `@prisma/adapter-pg` driver adapter) |
-| Auth | Auth.js (NextAuth) v5, Credentials provider, JWT sessions |
-| Validation | Zod |
-| Forms | React Hook Form |
-| Client state | Zustand (cart badge count only — everything else is server state) |
-| Charts | Recharts via shadcn's chart wrapper |
-| Testing | Vitest |
+| Layer        | Choice                                                                     |
+| ------------ | -------------------------------------------------------------------------- |
+| Framework    | Next.js 16 (App Router, Turbopack, TypeScript strict)                      |
+| UI           | Tailwind CSS v4, shadcn/ui, Lucide icons, Framer Motion                    |
+| Database     | PostgreSQL                                                                 |
+| ORM          | Prisma 7 (`prisma-client` generator + `@prisma/adapter-pg` driver adapter) |
+| Auth         | Auth.js (NextAuth) v5, Credentials provider, JWT sessions                  |
+| Validation   | Zod                                                                        |
+| Forms        | React Hook Form                                                            |
+| Client state | Zustand (cart badge count only — everything else is server state)          |
+| Charts       | Recharts via shadcn's chart wrapper                                        |
+| Testing      | Vitest                                                                     |
 
 ## Architecture Notes
 
@@ -90,19 +90,6 @@ src/
   generated/prisma/   # generated Prisma client (gitignored)
 ```
 
-## Environment Variables
-
-Copy `.env.example` to `.env` and fill in real values. Every var is documented inline; the short version:
-
-| Var | Required | Notes |
-|---|---|---|
-| `DATABASE_URL` | yes | PostgreSQL connection string |
-| `AUTH_SECRET` | yes | `npx auth secret` or `openssl rand -base64 32` |
-| `NEXT_PUBLIC_APP_URL` | yes | Used for absolute URLs (emails, sitemap, JSON-LD) |
-| `CLOUDINARY_CLOUD_NAME` / `_API_KEY` / `_API_SECRET` | no | Leave blank to use local-disk image storage |
-| `EMAIL_SERVER_HOST` (+ `_PORT`/`_USER`/`_PASSWORD`) | no | Leave blank to log emails to the console |
-| `STRIPE_*` | no | Placeholders only — see [Scope](#scope-whats-real-light-or-deferred) |
-
 ## Getting Started
 
 ```bash
@@ -134,22 +121,9 @@ npm run test    # Vitest (some tests need a live, migrated DATABASE_URL — see 
 
 ## Docker
 
-```bash
-docker compose up --build
-```
-
-This starts Postgres and the app together (`docker-compose.yml`); the app image is built from the multi-stage `Dockerfile` (Next's `output: "standalone"`). Run migrations/seed against the compose Postgres the same way as above, pointing `DATABASE_URL` at `postgresql://bazarx:bazarx@localhost:5432/bazarx` from your host, or `postgres` as the hostname from inside another container.
-
 ## Demo Accounts
 
 Seeded by `prisma/seed.ts` — **development/demo only**, never use these in a real deployment.
-
-| Role | Email | Password |
-|---|---|---|
-| Super Admin | `superadmin@bazarx.demo` | `Demo@12345` |
-| Admin | `admin@bazarx.demo` | `Demo@12345` |
-| Seller (TechWorld) | `seller@bazarx.demo` | `Demo@12345` |
-| Customer | `customer@bazarx.demo` | `Demo@12345` |
 
 The seed also creates 2 admins, 10 sellers/stores, 30 customers, 100+ products across 21 categories and 15 brands, 55+ orders in various lifecycle states, reviews, returns, payouts, coupons, and banners — by calling the same `createOrder` / `updateSellerOrderStatus` / `createReview` / `requestReturn` services a real user would trigger, not a separate fake-data path.
 
@@ -185,4 +159,5 @@ Given the size of this spec, this README is explicit about depth rather than sil
 - Auth-adjacent routes (password reset requests) are rate-limited.
 - `next.config.ts` sets standard security headers (`X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`).
 - `npm audit` reports 4 high-severity advisories in `mysql2`/`deepmerge-ts` — these are transitive dependencies of the Prisma **CLI's** multi-database config support and are never loaded by the running application (this project only uses the PostgreSQL adapter at runtime).
+
 # santal-mart
